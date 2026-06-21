@@ -5,7 +5,7 @@ Or deploy free at https://share.streamlit.io by connecting this GitHub repo.
 """
 
 import streamlit as st
-from recommender import load_data, build_similarity_matrix, get_personalized_recommendations
+from recommender import load_data, build_tfidf_matrix, get_personalized_recommendations
 
 st.set_page_config(page_title="Movie Recommender", page_icon="🎬")
 
@@ -13,15 +13,15 @@ st.title("🎬 Movie Recommender")
 st.write("Pick a few movies you like, and get personalized recommendations based on genre similarity.")
 
 
-# cache so we don't reload/rebuild the data + matrix on every interaction
+# cache so we don't reload/rebuild the data + TF-IDF matrix on every interaction
 @st.cache_data
 def get_engine():
     movies = load_data("movies.csv")
-    tfidf_matrix, similarity_matrix = build_similarity_matrix(movies)
-    return movies, tfidf_matrix, similarity_matrix
+    tfidf_matrix = build_tfidf_matrix(movies)
+    return movies, tfidf_matrix
 
 
-movies, tfidf_matrix, similarity_matrix = get_engine()
+movies, tfidf_matrix = get_engine()
 
 favorite_titles = st.multiselect(
     "Select movies you like:",
